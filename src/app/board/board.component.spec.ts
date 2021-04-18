@@ -26,4 +26,12 @@ describe('BoardComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+
+  it('should render button', () => {
+    const fixture = TestBed.createComponent(BoardComponent);
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement;
+    expect(compiled.querySelector('#newGameBtn').textContent).toBeTruthy();
+  });
 });

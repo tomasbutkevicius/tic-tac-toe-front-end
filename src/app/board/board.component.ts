@@ -25,31 +25,39 @@ export class BoardComponent implements OnInit {
     this.getHistory();
   }
 
-  getLatestBoard(){
+  private getLatestBoard() {
     this.boardService.getLatestBoardFromApi().subscribe((response: Board) => {
       console.log(response);
-      if(response.squares.length === 0){
-        this.getEmptyBoard();
-      } else{
-        this.board = response;
-      }
+      this.handleGetLatestBoard(response);
     },
-    err => {
-      console.log(err);
-    });
+      err => {
+        console.log(err);
+      });
   }
 
-  getHistory(){
+  private handleGetLatestBoard(response: Board) {
+    if (response == null) {
+      this.getEmptyBoard();
+    } else {
+      if (response.squares.length === 0) {
+        this.getEmptyBoard();
+      } else {
+        this.board = response;
+      }
+    }
+  }
+
+  private getHistory() {
     this.boardService.getAllBoardsFromApi().subscribe((response: Board[]) => {
       this.history = response;
       console.log(history);
     },
-    err => {
-      console.log(err);
-    });
+      err => {
+        console.log(err);
+      });
   }
 
-  getEmptyBoard() {
+  private getEmptyBoard() {
     this.board.squares = Array(9).fill(null);
     this.board.winner = null;
     this.board.xIsNext = true;
@@ -61,32 +69,32 @@ export class BoardComponent implements OnInit {
     this.saveBoard();
   }
 
-  get player(){
+  get player() {
     return this.board.xIsNext ? 'X' : 'O';
   }
 
-  makeMove(index: number){
-    if(!this.board.squares[index] && this.board.winner == null){
+  makeMove(index: number) {
+    if (!this.board.squares[index] && this.board.winner == null) {
       this.board.squares.splice(index, 1, this.player);
-      this.board.lastAction = this.player + " to position #" + index; 
-      this.board.xIsNext = !this.board.xIsNext;    
+      this.board.lastAction = this.player + " to position #" + index;
+      this.board.xIsNext = !this.board.xIsNext;
       this.board.winner = this.calculateWinner();
       this.saveBoard();
     }
   }
 
-  saveBoard(){
+  private saveBoard() {
     this.boardService.saveBoardToApi(this.board).subscribe((data) => {
       console.log(data);
       this.getHistory();
     },
-    err => {
-      console.log(err);
-    });
-    
+      err => {
+        console.log(err);
+      });
+
   }
 
-  calculateWinner() {
+  private calculateWinner() {
     const lines = [
       [0, 1, 2],
       [3, 4, 5],
