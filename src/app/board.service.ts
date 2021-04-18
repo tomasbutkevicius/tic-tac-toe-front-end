@@ -22,7 +22,7 @@ export class BoardService {
   }
 
   getAllBoardsFromApi(){
-    return this.http.get<Board[]>(this.API_URL + "/boards/");
+    return this.http.get<Board[]>(this.API_URL + "/boards");
   }
 
   saveBoardToApi(board: Board){
