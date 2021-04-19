@@ -1,0 +1,18 @@
+.git
+
+.gitignore
+
+*.md
+
+.editorconfig
+
+/e2e
+
+# OS generated files #
+.DS_Store
+
+# Node Files #
+/node_modules
+
+# Dist #
+/dist
