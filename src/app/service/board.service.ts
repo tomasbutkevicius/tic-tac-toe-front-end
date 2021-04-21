@@ -17,10 +17,6 @@ export class BoardService {
 
   constructor(private http: HttpClient) { }
 
-  getLatestBoardFromApi():Observable<Board> {
-    return this.http.get<Board>(this.API_URL + "/boards/latest");
-  }
-
   getAllBoardsFromApi(){
     return this.http.get<Board[]>(this.API_URL + "/boards");
   }
@@ -29,9 +25,8 @@ export class BoardService {
     return this.http.post(this.API_URL + "/boards", JSON.stringify(board), httpOptions);
   }
 
-  deleteAllBoards(secret: string){
-    let headers = new HttpHeaders({ 'Content-Type': 'application/json', 'secret': secret});
-    return this.http.delete(this.API_URL + "/boards", { headers: headers});
+  deleteAllBoards(){
+    return this.http.delete(this.API_URL + "/boards");
   }
 
 }

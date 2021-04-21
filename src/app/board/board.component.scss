@@ -15,7 +15,6 @@ main {
     grid-template-columns: 200px 200px 200px;
     grid-gap: 0px;
     content: center;
-    float: left;
 }
   
 app-square {
@@ -24,12 +23,5 @@ app-square {
 }
 
 .history{
-    float: left;
-}
-
-#deleteHistoryBtn{
-    margin-left: 50px;
-    background-color: red;
-    color: white;
     float: left;
 }

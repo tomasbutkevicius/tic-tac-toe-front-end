@@ -11,18 +11,14 @@
         </app-square>
 
     </main>
-    <div class="history">
-        <ul class="item" *ngFor="let board of history | reverse;">
-            <li *ngIf="board.winner !== null">Winner: {{board.winner}} </li>
-            <li *ngIf="board.winner == null">Action: {{board.lastAction}} </li>
-        </ul>
-    </div>
-
 </div>
-
-
-<button nbButton outline status="danger" (click)="deleteHistory()" id="deleteHistoryBtn" *ngIf="!serverError && (history.length !== 0)">Delete
-    history</button>
+<h2>Activity log</h2>
+<div class="history">
+    <ul class="item" *ngFor="let board of history">
+        <li *ngIf="board.winner !== null">Winner: {{board.winner}} </li>
+        <li *ngIf="board.winner == null">Action: {{board.lastAction}} </li>
+    </ul>
+</div>
 <div *ngIf="serverError">
     {{serverError}}
 </div>

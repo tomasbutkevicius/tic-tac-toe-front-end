@@ -29,24 +29,10 @@ export class BoardComponent implements OnInit {
   }
 
   private getLatestBoard() {
-    this.boardService.getLatestBoardFromApi().subscribe((response: Board) => {
-      this.handleGetLatestBoard(response);
-    },
-      err => {
-        let localLatestBoard = localStorage.getItem('latestBoard');
-        if (localLatestBoard) {
-          this.board = JSON.parse(localLatestBoard);
-        }
-      });
-  }
-
-  private handleGetLatestBoard(response: Board) {
-    if (response == null || response.squares.length === 0) {
-      this.getEmptyBoard();
-    } else {
-      this.board = response;
+    let sessionLatestBoard = sessionStorage.getItem('latestBoard');
+    if (sessionLatestBoard) {
+      this.board = JSON.parse(sessionLatestBoard);
     }
-    localStorage.setItem('latestBoard', JSON.stringify(this.board));
   }
 
   private getHistory() {
@@ -79,7 +65,7 @@ export class BoardComponent implements OnInit {
         this.changeDetectorRef.detectChanges();
         console.log(err);
       });
-    localStorage.setItem('latestBoard', JSON.stringify(this.board));
+    sessionStorage.setItem('latestBoard', JSON.stringify(this.board));
   }
 
   private calculateWinner() {
@@ -105,26 +91,6 @@ export class BoardComponent implements OnInit {
     }
     return null;
   }
-
-  deleteHistory() {
-    let secret = prompt("Please enter secret to remove data");
-    this.boardService.deleteAllBoards(secret).subscribe((response) => {
-      alert(response["message"]);
-      this.getEmptyBoard();
-      this.ngOnInit();
-    }, err => {
-      console.log(err)
-      if (err.status == 403) {
-        if (err.error.message.includes("required")) {
-          alert("Invalid secret");
-          return;
-        }
-        alert(err.error.message);
-        return;
-      }
-
-    });
-  };
 
   newGame() {
     this.getEmptyBoard();
