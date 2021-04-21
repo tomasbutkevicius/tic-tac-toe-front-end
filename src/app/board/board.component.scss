@@ -1,9 +1,35 @@
+#newGameBtn{
+    margin: 10px;
+    background-color: green;
+    color: white;
+}
+
+.board{
+    display: grid;
+    grid-template-columns: repeat(3);
+    gap: 10px;
+}
+
 main {
     display: grid;
     grid-template-columns: 200px 200px 200px;
     grid-gap: 0px;
+    content: center;
+    float: left;
 }
   
 app-square {
     border: 1px gray solid;
-    height: 200px;}
+    height: 200px;
+}
+
+.history{
+    float: left;
+}
+
+#deleteHistoryBtn{
+    margin-left: 50px;
+    background-color: red;
+    color: white;
+    float: left;
+}

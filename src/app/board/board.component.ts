@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { BoardService } from '../board.service';
-import { Board } from '../../models/board';
+import { BoardService } from '../service/board.service';
+import { Board } from '../model/board';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-board',
@@ -18,7 +19,9 @@ export class BoardComponent implements OnInit {
     lastAction: null
   };
 
-  constructor(private boardService: BoardService) { }
+  serverError: string;
+
+  constructor(private boardService: BoardService, private changeDetectorRef: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.getLatestBoard();
@@ -27,32 +30,34 @@ export class BoardComponent implements OnInit {
 
   private getLatestBoard() {
     this.boardService.getLatestBoardFromApi().subscribe((response: Board) => {
-      console.log(response);
       this.handleGetLatestBoard(response);
     },
       err => {
-        console.log(err);
+        let localLatestBoard = localStorage.getItem('latestBoard');
+        if (localLatestBoard) {
+          this.board = JSON.parse(localLatestBoard);
+        }
       });
   }
 
   private handleGetLatestBoard(response: Board) {
-    if (response == null) {
+    if (response == null || response.squares.length === 0) {
       this.getEmptyBoard();
     } else {
-      if (response.squares.length === 0) {
-        this.getEmptyBoard();
-      } else {
-        this.board = response;
-      }
+      this.board = response;
     }
+    localStorage.setItem('latestBoard', JSON.stringify(this.board));
   }
 
   private getHistory() {
     this.boardService.getAllBoardsFromApi().subscribe((response: Board[]) => {
       this.history = response;
-      console.log(history);
+      this.serverError = null;
+      this.changeDetectorRef.detectChanges();
     },
       err => {
+        this.serverError = "Could not retrieve game history from server";
+        this.changeDetectorRef.detectChanges();
         console.log(err);
       });
   }
@@ -61,37 +66,20 @@ export class BoardComponent implements OnInit {
     this.board.squares = Array(9).fill(null);
     this.board.winner = null;
     this.board.xIsNext = true;
-    this.board.lastAction = "Clean board"
-  }
-
-  newGame() {
-    this.getEmptyBoard();
-    this.saveBoard();
-  }
-
-  get player() {
-    return this.board.xIsNext ? 'X' : 'O';
-  }
-
-  makeMove(index: number) {
-    if (!this.board.squares[index] && this.board.winner == null) {
-      this.board.squares.splice(index, 1, this.player);
-      this.board.lastAction = this.player + " to position #" + index;
-      this.board.xIsNext = !this.board.xIsNext;
-      this.board.winner = this.calculateWinner();
-      this.saveBoard();
-    }
+    this.board.lastAction = "Clean board";
   }
 
   private saveBoard() {
     this.boardService.saveBoardToApi(this.board).subscribe((data) => {
-      console.log(data);
       this.getHistory();
     },
       err => {
         console.log(err);
+        this.serverError = "Could not save game history to server";
+        this.changeDetectorRef.detectChanges();
+        console.log(err);
       });
-
+    localStorage.setItem('latestBoard', JSON.stringify(this.board));
   }
 
   private calculateWinner() {
@@ -116,6 +104,45 @@ export class BoardComponent implements OnInit {
       }
     }
     return null;
+  }
+
+  deleteHistory() {
+    let secret = prompt("Please enter secret to remove data");
+    this.boardService.deleteAllBoards(secret).subscribe((response) => {
+      alert(response["message"]);
+      this.getEmptyBoard();
+      this.ngOnInit();
+    }, err => {
+      console.log(err)
+      if (err.status == 403) {
+        if (err.error.message.includes("required")) {
+          alert("Invalid secret");
+          return;
+        }
+        alert(err.error.message);
+        return;
+      }
+
+    });
+  };
+
+  newGame() {
+    this.getEmptyBoard();
+    this.saveBoard();
+  }
+
+  get player() {
+    return this.board.xIsNext ? 'X' : 'O';
+  }
+
+  makeMove(index: number) {
+    if (!this.board.squares[index] && this.board.winner == null) {
+      this.board.squares.splice(index, 1, this.player);
+      this.board.lastAction = this.player + " to position #" + (1 + index);
+      this.board.xIsNext = !this.board.xIsNext;
+      this.board.winner = this.calculateWinner();
+      this.saveBoard();
+    }
   }
 
 }

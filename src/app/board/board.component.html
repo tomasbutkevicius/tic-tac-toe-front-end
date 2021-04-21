@@ -1,23 +1,28 @@
-<h1>Current Player: {{player}}</h1>>
- 
-<button (click)="newGame()" id="newGameBtn">Start New Game</button>
+<h1 id="currentPlayer">Current Player: {{player}}</h1>
 
-<h2 *ngIf="board.winner">
+<button nbButton outline status="success" (click)="newGame()" id="newGameBtn">Start New Game</button>
+<h2 *ngIf="board.winner" id="winner">
     Player {{board.winner}} won the game !
 </h2>
 
-<main>
-    <app-square 
-    *ngFor = "let val of board.squares; let  i = index"
-    [value] = "val"
-    (click)="makeMove(i)">
-    </app-square>
+<div id="board">
+    <main>
+        <app-square *ngFor="let val of board.squares; let  i = index" [value]="val" (click)="makeMove(i)">
+        </app-square>
 
-    <h2>Game history</h2>
-  <div class = "history">
-      <ul class = "item"  *ngFor = "let board of history;">
+    </main>
+    <div class="history">
+        <ul class="item" *ngFor="let board of history | reverse;">
             <li *ngIf="board.winner !== null">Winner: {{board.winner}} </li>
             <li *ngIf="board.winner == null">Action: {{board.lastAction}} </li>
-      </ul>
-  </div>
-</main>
+        </ul>
+    </div>
+
+</div>
+
+
+<button nbButton outline status="danger" (click)="deleteHistory()" id="deleteHistoryBtn" *ngIf="!serverError && (history.length !== 0)">Delete
+    history</button>
+<div *ngIf="serverError">
+    {{serverError}}
+</div>
