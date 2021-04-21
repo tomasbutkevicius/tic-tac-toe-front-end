@@ -6,6 +6,7 @@
     Player {{board.winner}} won the game !
 </h2>
 
+
 <main>
     <app-square 
     *ngFor = "let val of board.squares; let  i = index"
@@ -21,3 +22,5 @@
       </ul>
   </div>
 </main>
+
+<button (click)="deleteHistory()" id="deleteHistoryBtn">Delete history</button>

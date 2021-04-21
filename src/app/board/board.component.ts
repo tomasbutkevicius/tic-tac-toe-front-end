@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BoardService } from '../board.service';
 import { Board } from '../../models/board';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-board',
@@ -27,7 +28,6 @@ export class BoardComponent implements OnInit {
 
   private getLatestBoard() {
     this.boardService.getLatestBoardFromApi().subscribe((response: Board) => {
-      console.log(response);
       this.handleGetLatestBoard(response);
     },
       err => {
@@ -36,26 +36,41 @@ export class BoardComponent implements OnInit {
   }
 
   private handleGetLatestBoard(response: Board) {
-    if (response == null) {
+    if (response == null || response.squares.length === 0) {
       this.getEmptyBoard();
     } else {
-      if (response.squares.length === 0) {
-        this.getEmptyBoard();
-      } else {
-        this.board = response;
-      }
+      this.board = response;
     }
   }
 
   private getHistory() {
     this.boardService.getAllBoardsFromApi().subscribe((response: Board[]) => {
       this.history = response;
-      console.log(history);
     },
       err => {
         console.log(err);
       });
   }
+
+  deleteHistory(){
+    let secret = prompt("Please enter secret to remove data");
+    console.log("SECERT:" + secret);
+    this.boardService.deleteAllBoards(secret).subscribe((response) => {
+        alert(response["message"]);
+        this.getEmptyBoard();
+    }, err => {
+      console.log(err)
+      if(err.status == 403){
+        if(err.error.message.includes("required")){
+          alert("Invalid secret");
+          return;
+        }
+        alert(err.error.message);
+        return;
+      }
+      
+    });
+  };
 
   private getEmptyBoard() {
     this.board.squares = Array(9).fill(null);
@@ -76,7 +91,7 @@ export class BoardComponent implements OnInit {
   makeMove(index: number) {
     if (!this.board.squares[index] && this.board.winner == null) {
       this.board.squares.splice(index, 1, this.player);
-      this.board.lastAction = this.player + " to position #" + index;
+      this.board.lastAction = this.player + " to position #" + (1 + index);
       this.board.xIsNext = !this.board.xIsNext;
       this.board.winner = this.calculateWinner();
       this.saveBoard();
@@ -85,7 +100,6 @@ export class BoardComponent implements OnInit {
 
   private saveBoard() {
     this.boardService.saveBoardToApi(this.board).subscribe((data) => {
-      console.log(data);
       this.getHistory();
     },
       err => {
