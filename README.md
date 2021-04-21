@@ -1,9 +1,28 @@
 # TicTacToe
 
-## To run project
-First start backend with npm start
-Run Angular project with npm start or ng serve
+## Introduction
 
+TicTacToe game front-end. Without back-end action log is not displayed.
+
+Backend of project: https://github.com/tomasbutkevicius/tic-tac-toe-back-end
+
+## Installation
+
+- Clone project from git repository
+
+- Run project (with docker) by entering in terminal
+```bash
+docker-compose up --build -d
+```
+
+## Usage
+
+Go to the url: http://localhost:4200 to start the game.
+
+## Useful links 
+- For docker setup 
+  - (Mac)     https://docs.docker.com/docker-for-mac/install/
+  - (Windows) https://docs.docker.com/docker-for-windows/install/
 
 
 ## Angular generated info
