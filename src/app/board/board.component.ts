@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BoardService } from '../service/board.service';
 import { Board } from '../model/board';
-import { of } from 'rxjs';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-board',
@@ -19,7 +19,9 @@ export class BoardComponent implements OnInit {
     lastAction: null
   };
 
-  constructor(private boardService: BoardService) { }
+  serverError: string;
+
+  constructor(private boardService: BoardService, private changeDetectorRef: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.getLatestBoard();
@@ -31,7 +33,10 @@ export class BoardComponent implements OnInit {
       this.handleGetLatestBoard(response);
     },
       err => {
-        console.log(err);
+        let localLatestBoard = localStorage.getItem('latestBoard');
+        if (localLatestBoard) {
+          this.board = JSON.parse(localLatestBoard);
+        }
       });
   }
 
@@ -41,33 +46,38 @@ export class BoardComponent implements OnInit {
     } else {
       this.board = response;
     }
+    localStorage.setItem('latestBoard', JSON.stringify(this.board));
   }
 
   private getHistory() {
     this.boardService.getAllBoardsFromApi().subscribe((response: Board[]) => {
       this.history = response;
+      this.serverError = null;
+      this.changeDetectorRef.detectChanges();
     },
       err => {
+        this.serverError = "Could not retrieve game history from server";
+        this.changeDetectorRef.detectChanges();
         console.log(err);
       });
   }
 
-  deleteHistory(){
+  deleteHistory() {
     let secret = prompt("Please enter secret to remove data");
     this.boardService.deleteAllBoards(secret).subscribe((response) => {
-        alert(response["message"]);
-        this.getEmptyBoard();
+      alert(response["message"]);
+      this.getEmptyBoard();
     }, err => {
       console.log(err)
-      if(err.status == 403){
-        if(err.error.message.includes("required")){
+      if (err.status == 403) {
+        if (err.error.message.includes("required")) {
           alert("Invalid secret");
           return;
         }
         alert(err.error.message);
         return;
       }
-      
+
     });
   };
 
@@ -75,7 +85,7 @@ export class BoardComponent implements OnInit {
     this.board.squares = Array(9).fill(null);
     this.board.winner = null;
     this.board.xIsNext = true;
-    this.board.lastAction = "Clean board"
+    this.board.lastAction = "Clean board";
   }
 
   newGame() {
@@ -103,8 +113,11 @@ export class BoardComponent implements OnInit {
     },
       err => {
         console.log(err);
+        this.serverError = "Could not save game history to server";
+        this.changeDetectorRef.detectChanges();
+        console.log(err);
       });
-
+    localStorage.setItem('latestBoard', JSON.stringify(this.board));
   }
 
   private calculateWinner() {
