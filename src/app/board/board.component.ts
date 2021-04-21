@@ -62,49 +62,11 @@ export class BoardComponent implements OnInit {
       });
   }
 
-  deleteHistory() {
-    let secret = prompt("Please enter secret to remove data");
-    this.boardService.deleteAllBoards(secret).subscribe((response) => {
-      alert(response["message"]);
-      this.getEmptyBoard();
-    }, err => {
-      console.log(err)
-      if (err.status == 403) {
-        if (err.error.message.includes("required")) {
-          alert("Invalid secret");
-          return;
-        }
-        alert(err.error.message);
-        return;
-      }
-
-    });
-  };
-
   private getEmptyBoard() {
     this.board.squares = Array(9).fill(null);
     this.board.winner = null;
     this.board.xIsNext = true;
     this.board.lastAction = "Clean board";
-  }
-
-  newGame() {
-    this.getEmptyBoard();
-    this.saveBoard();
-  }
-
-  get player() {
-    return this.board.xIsNext ? 'X' : 'O';
-  }
-
-  makeMove(index: number) {
-    if (!this.board.squares[index] && this.board.winner == null) {
-      this.board.squares.splice(index, 1, this.player);
-      this.board.lastAction = this.player + " to position #" + (1 + index);
-      this.board.xIsNext = !this.board.xIsNext;
-      this.board.winner = this.calculateWinner();
-      this.saveBoard();
-    }
   }
 
   private saveBoard() {
@@ -142,6 +104,45 @@ export class BoardComponent implements OnInit {
       }
     }
     return null;
+  }
+
+  deleteHistory() {
+    let secret = prompt("Please enter secret to remove data");
+    this.boardService.deleteAllBoards(secret).subscribe((response) => {
+      alert(response["message"]);
+      this.getEmptyBoard();
+      this.ngOnInit();
+    }, err => {
+      console.log(err)
+      if (err.status == 403) {
+        if (err.error.message.includes("required")) {
+          alert("Invalid secret");
+          return;
+        }
+        alert(err.error.message);
+        return;
+      }
+
+    });
+  };
+
+  newGame() {
+    this.getEmptyBoard();
+    this.saveBoard();
+  }
+
+  get player() {
+    return this.board.xIsNext ? 'X' : 'O';
+  }
+
+  makeMove(index: number) {
+    if (!this.board.squares[index] && this.board.winner == null) {
+      this.board.squares.splice(index, 1, this.player);
+      this.board.lastAction = this.player + " to position #" + (1 + index);
+      this.board.xIsNext = !this.board.xIsNext;
+      this.board.winner = this.calculateWinner();
+      this.saveBoard();
+    }
   }
 
 }
