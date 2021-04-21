@@ -54,7 +54,6 @@ export class BoardComponent implements OnInit {
 
   deleteHistory(){
     let secret = prompt("Please enter secret to remove data");
-    console.log("SECERT:" + secret);
     this.boardService.deleteAllBoards(secret).subscribe((response) => {
         alert(response["message"]);
         this.getEmptyBoard();
