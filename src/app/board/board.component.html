@@ -1,6 +1,6 @@
 <h1>Current Player: {{player}}</h1>>
  
-<button (click)="newGame()" id="newGameBtn">Start New Game</button>
+<button nbButton outline status="success" (click)="newGame()" id="newGameBtn">Start New Game</button>
 
 <h2 *ngIf="board.winner">
     Player {{board.winner}} won the game !
@@ -23,7 +23,7 @@
   </div>
 </main>
 
-<button (click)="deleteHistory()" id="deleteHistoryBtn" *ngIf="!serverError">Delete history</button>
+<button nbButton outline status="danger" (click)="deleteHistory()" id="deleteHistoryBtn" *ngIf="!serverError">Delete history</button>
 <div *ngIf="serverError">
     {{serverError}}
   </div>
