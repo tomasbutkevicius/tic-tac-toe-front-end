@@ -21,7 +21,7 @@
 </div>
 
 
-<button nbButton outline status="danger" (click)="deleteHistory()" id="deleteHistoryBtn" *ngIf="!serverError">Delete
+<button nbButton outline status="danger" (click)="deleteHistory()" id="deleteHistoryBtn" *ngIf="!serverError && (history.length !== 0)">Delete
     history</button>
 <div *ngIf="serverError">
     {{serverError}}
