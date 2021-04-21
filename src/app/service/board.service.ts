@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders} from '@angular/common/http';
-import { Board } from '../models/board';
+import { Board } from '../model/board';
 import { Observable } from 'rxjs';
 
 let httpOptions = {
