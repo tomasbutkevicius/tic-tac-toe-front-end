@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders} from '@angular/common/http';
-import { Board } from '../models/board';
+import { Board } from '../model/board';
 import { Observable } from 'rxjs';
 
-const httpOptions = {
+let httpOptions = {
   headers: new HttpHeaders({
     'content-type': 'application/json'
   })
@@ -27,6 +27,11 @@ export class BoardService {
 
   saveBoardToApi(board: Board){
     return this.http.post(this.API_URL + "/boards", JSON.stringify(board), httpOptions);
+  }
+
+  deleteAllBoards(secret: string){
+    let headers = new HttpHeaders({ 'Content-Type': 'application/json', 'secret': secret});
+    return this.http.delete(this.API_URL + "/boards", { headers: headers});
   }
 
 }

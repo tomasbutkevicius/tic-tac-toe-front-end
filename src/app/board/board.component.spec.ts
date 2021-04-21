@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { BoardService } from '../board.service';
+import { BoardService } from '../service/board.service';
 import { HttpClientModule } from '@angular/common/http';
 import { BoardComponent } from './board.component';
 

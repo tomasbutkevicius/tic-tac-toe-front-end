@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClientModule } from '@angular/common/http';
 import { BoardService } from './board.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { Board } from '../models/board';
+import { Board } from '../model/board';
 
 describe('BoardService', () => {
   let service: BoardService,
