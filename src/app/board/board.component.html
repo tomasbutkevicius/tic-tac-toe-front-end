@@ -1,4 +1,4 @@
-<h1 id="currentPlayer">Current Player: {{player}}</h1>
+<h1 id="currentPlayer" *ngIf="board.squares">Current Player: {{player}}</h1>
 
 <button nbButton outline status="success" (click)="newGame()" id="newGameBtn">Start New Game</button>
 <h2 *ngIf="board.winner" id="winner">

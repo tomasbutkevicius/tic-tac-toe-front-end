@@ -49,7 +49,8 @@ export class BoardComponent implements OnInit {
   }
 
   private getEmptyBoard() {
-    this.board.squares = Array(9).fill(null);
+    let squareCount = 9;
+    this.board.squares = Array(squareCount).fill(null);
     this.board.winner = null;
     this.board.xIsNext = true;
     this.board.lastAction = "Clean board";
