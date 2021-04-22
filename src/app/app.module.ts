@@ -9,14 +9,12 @@ import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NbThemeModule, NbLayoutModule, NbButtonModule } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
-import { ReversePipe } from './reverse.pipe';
 
 @NgModule({
   declarations: [
     AppComponent,
     SquareComponent,
-    BoardComponent,
-    ReversePipe
+    BoardComponent
   ],
   imports: [
     BrowserModule,
